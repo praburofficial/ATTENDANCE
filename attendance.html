@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Attendance</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="attendance-container">
+    <h2>Attendance Page</h2>
+    <h3 id="sectionName">Section: A</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Roll No</th>
+          <th>Name</th>
+          <th>Attendance</th>
+        </tr>
+      </thead>
+      <tbody id="studentList">
+        <!-- Student list will be dynamically inserted here -->
+      </tbody>
+    </table>
+    <div class="buttons">
+      <button onclick="saveAttendance()">Save Attendance</button>
+      <button onclick="downloadAttendance()">Download Attendance</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
