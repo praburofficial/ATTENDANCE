@@ -3,14 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Attendance Home</title>
+  <title>Department Attendance Management System</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="home-container">
-    <h1>Attendance Management System</h1>
-    <a href="admin_login.html">Admin Login</a>
-    <a href="staff_login.html">Staff Login</a>
+    
+    <img src="logo.png" alt="College Logo" class="logo" />
+    <h1>Department Attendance Management System</h1>
+    <h3>Manage daily attendance seamlessly for every department and section</h3>
+
+    <div class="login-buttons">
+      <a href="admin_login.html">Admin Login</a>
+      <a href="staff_login.html">Staff Login</a>
+      <!-- Add this inside your body, below Save Attendance button -->
+<button id="view-analytics-btn" onclick="window.location.href='analytics.html'">View Analytics</button>
+
+
+    </div>
+
+    <div class="department-list">
+      <h2>Departments Supported:</h2>
+      <ul>
+        <li>Computer Science and Engineering</li>
+        <li>Information Technology</li>
+        <li>Electronics and Communication Engineering</li>
+        <li>Electrical and Electronics Engineering</li>
+        <li>Mechanical Engineering</li>
+        <li>Civil Engineering</li>
+        <li>Artificial Intelligence & Data Science</li>
+      </ul>
+    </div>
+
+    <footer>
+      © 2025 Department Attendance System | Designed by Department of CSE
+    </footer>
   </div>
 </body>
 </html>

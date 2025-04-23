@@ -1,14 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Staff Dashboard</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Staff Dashboard - Department Attendance System</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 </head>
 <body>
-  <h2>Staff Dashboard</h2>
-  <input type="file" accept=".xlsx, .xls" onchange="uploadStudentData(event)" />
-  <a href="attendance.html">Go to Attendance</a>
+  <div class="staff-dashboard-container">
+    <h1>Welcome, <span id="staff-username"></span></h1>
+
+    <!-- Upload Section -->
+    <h2>Upload Student List</h2>
+    <input type="file" id="excel-file" accept=".xlsx" />
+    <button onclick="handleStudentUpload()">Upload and Save</button>
+    
+    <!-- Attendance Info Section -->
+    <h4>Attendance for <span id="staff-year-name"></span>, Section: <span id="staff-section-name"></span></h4>
+    
+    <!-- Date Selection -->
+    <label for="attendance-date">Select Date:</label>
+    <input type="date" id="attendance-date" onchange="loadAttendanceForDate()">
+    <span id="attendance-day-name"></span>
+
+    <!-- Day Order Selection -->
+    <br><br>
+    <label for="day-order">Select Day Order:</label>
+    <select id="day-order">
+      <option value="Day 1">Day 1</option>
+      <option value="Day 2">Day 2</option>
+      <option value="Day 3">Day 3</option>
+      <option value="Day 4">Day 4</option>
+      <option value="Day 5">Day 5</option>
+      <option value="Day 6">Day 6</option>
+    </select>
+
+    <p>Selected Day Order: <strong id="selected-day-order-display">Day 1</strong></p>
+
+    <!-- Attendance Table -->
+    <table id="attendance-table">
+      <thead>
+        <tr>
+          <th>Roll Number</th>
+          <th>Student Name</th>
+          <th>Period 1 (9:30 AM - 10:20 AM)</th>
+          <th>Period 2 (10:20 AM - 11:10 AM)</th>
+          <th>Period 3 (11:25 AM - 12:15 PM)</th>
+          <th>Period 4 (12:15 PM - 1:05 PM)</th>
+          <th>Period 5 (1:05 PM - 2:45 PM)</th>
+          <th>Period 6 (2:45 PM - 3:35 PM)</th>
+          <th>Period 7 (3:35 PM - 4:40 PM)</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <!-- Action Buttons -->
+    <button onclick="saveAttendance()">Save Attendance</button>
+    <button onclick="downloadAttendanceReport()">Download Attendance Report</button>
+  </div>
+
+  <!-- JS File -->
+  <script>
+    // Update selected day order display
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById("day-order").addEventListener("change", function () {
+        document.getElementById("selected-day-order-display").textContent = this.value;
+      });
+    });
+  </script>
   <script src="script.js"></script>
 </body>
 </html>

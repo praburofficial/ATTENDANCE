@@ -1,20 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard - Department Attendance System</title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-  <h2>Create Staff Account</h2>
-  <input id="staff-username" placeholder="Username" />
-  <input id="staff-password" placeholder="Password" />
-  <input id="batch" placeholder="Batch" />
-  <input id="year" placeholder="Year" />
-  <input id="section" placeholder="Section" />
-  <button onclick="createStaff()">Add Staff</button>
-  <table id="staffTable">
-    <tr><th>Username</th><th>Batch</th><th>Year</th><th>Section</th></tr>
-  </table>
+  <div class="admin-dashboard-container">
+    <h1>Welcome, Admin</h1>
+    
+    <h2>Create Staff Account</h2>
+    <form id="create-staff-form" onsubmit="createStaff(event)">
+      <input type="text" id="staff-username" placeholder="Staff Username" required />
+      <input type="password" id="staff-password" placeholder="Staff Password" required />
+      
+      <!-- Manually type Year and Section -->
+      <input type="text" id="staff-year" placeholder="Enter Year (e.g., Year 1)" required />
+      <input type="text" id="staff-section" placeholder="Enter Section (e.g., Section A)" required />
+      
+      <button type="submit">Create Staff</button>
+    </form>
+    
+    <h2>Staff List</h2>
+    <table id="staff-list">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Year</th>
+          <th>Section</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>

@@ -1,202 +1,256 @@
-/* Reset and Global Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f9fbfd, #e0eafc);
-    color: #333;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 40px 20px;
-    animation: fadeIn 1s ease-in-out;
-  }
-  
-  /* Navigation */
-  nav {
-    background-color: #004080;
-    padding: 15px 30px;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .logo {
-    font-size: 24px;
-    font-weight: bold;
-  }
-  
-  .nav-links {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-  }
-  
-  .nav-links li a {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-  }
-  
-  .nav-links li a:hover {
-    text-decoration: underline;
-  }
-  
-  /* Page Titles */
-  h1, h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
-    animation: slideIn 1s ease-out;
-  }
-  
-  h1 {
-    font-size: 2.5rem;
-  }
-  
-  h2 {
-    font-size: 2rem;
-  }
-  
-  h3 {
-    font-size: 1.3rem;
-    color: #555;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  /* Containers */
-  .container,
-  .login-container,
-  .dashboard,
-  .home-container,
-  .attendance-container {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-    margin: 20px auto;
-    width: 90%;
-    max-width: 800px;
-    text-align: center;
-  }
-  
-  /* Input Fields */
-  input[type="text"],
-  input[type="password"],
-  input[type="file"],
-  select {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0 20px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-  }
-  
-  input[type="file"] {
-    border: 2px solid #007BFF;
-    transition: all 0.3s ease;
-    cursor: pointer;
-  }
-  
-  input[type="file"]:hover {
-    background-color: #007BFF;
-    color: white;
-    transform: scale(1.05);
-  }
-  
-  /* Buttons */
-  button,
-  .home-button,
-  a.button-link {
-    background-color: #004080;
-    color: white;
-    padding: 12px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-    margin-top: 10px;
-    display: inline-block;
-    text-decoration: none;
-  }
-  
-  button:hover,
-  .home-button:hover,
-  a.button-link:hover {
-    background-color: #003060;
-    transform: scale(1.05);
-  }
-  
-  /* Tables */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    animation: fadeIn 1s ease-in;
-  }
-  
-  th, td {
-    padding: 14px 12px;
-    text-align: center;
-    border: 1px solid #ddd;
-    font-size: 16px;
-  }
-  
-  th {
-    background-color: #3498db;
-    color: white;
-    text-transform: uppercase;
-  }
-  
-  tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  tr:hover {
-    background-color: #eef7ff;
-  }
-  
-  table td select {
-    padding: 5px;
-  }
-  
-  /* Attendance Container Specific */
-  .attendance-container {
-    overflow-x: auto;
-  }
-  
-  /* Animations */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  
-  @keyframes slideIn {
-    from { transform: translateY(-30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-  
-  /* Responsive Design */
-  @media screen and (max-width: 600px) {
-    .nav-links {
-      flex-direction: column;
-      gap: 10px;
-    }
-  
-    h1, h2 {
-      font-size: 1.5rem;
-    }
-  
-    button, .home-button, a.button-link {
-      width: 100%;
-    }
-  }
-  
+/* General Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #e3f2fd, #fce4ec);
+  color: #424242;
+}
+
+h1, h3 {
+  color: #0d47a1;
+}
+
+h1 {
+  font-size: 3rem;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-top: -10px;
+}
+
+/* Main Container */
+.home-container, .login-container, .admin-dashboard-container, .staff-dashboard-container {
+  width: 100%;
+  max-width: fit-content;
+  margin: 50px auto;
+  padding: 30px 50px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  color: #0d47a1;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Header and Footer */
+footer {
+  margin-top: 40px;
+  padding: 15px;
+  background-color: #eceff1;
+  color: #616161;
+  font-size: 0.9rem;
+  text-align: center;
+  border-radius: 0 0 15px 15px;
+}
+
+.logo {
+  display: block;
+  margin: 0 auto;
+  height: 100px; /* Makes it square */
+  object-fit: cover; /* Ensures the image scales correctly */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Buttons (Login, Submit, etc.) */
+button, a {
+  text-decoration: none;
+  color: #fff;
+  background: linear-gradient(to right, #1e88e5, #1565c0);
+  padding: 14px 35px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: inline-block;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(21, 101, 192, 0.2);
+  transition: all 0.3s ease;
+}
+
+button:hover, a:hover {
+  transform: scale(1.05);
+  background: linear-gradient(to right, #1565c0, #0d47a1);
+}
+
+input[type="text"], input[type="password"], input[type="file"], button {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  width: 100%;
+  margin-bottom: 20px;
+  font-size: 1rem;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+  border-color: #0d47a1;
+  outline: none;
+  box-shadow: 0 0 5px rgba(13, 71, 161, 0.5);
+}
+
+/* Table */
+table {
+  width: 100%;
+  margin-top: 30px;
+  /* margin-left: -10%; */
+  border-collapse: collapse;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background: #0d47a1;
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+tr:hover {
+  background: #f1f1f1;
+  cursor: pointer;
+}
+
+/* Form Styles (Login & Admin) */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form input {
+  margin-bottom: 20px;
+}
+
+form button {
+  align-self: center;
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  border-radius: 50px;
+  background: #0d47a1;
+}
+
+form button:hover {
+  background: #1565c0;
+}
+
+/* Admin Dashboard */
+.admin-dashboard-container {
+  background: linear-gradient(to top, #ffffff, #e3f2fd);
+}
+
+.staff-management h2 {
+  margin-top: 20px;
+  font-size: 1.8rem;
+}
+
+.staff-list {
+  margin-top: 30px;
+}
+
+.staff-list th, .staff-list td {
+  text-align: center;
+}
+
+.staff-management table {
+  margin-top: 30px;
+}
+
+/* Staff Dashboard */
+.staff-dashboard-container {
+  background: linear-gradient(to top, #ffffff, #fce4ec);
+}
+
+input[type="file"] {
+  padding: 12px;
+  border: 2px solid #0d47a1;
+  margin-bottom: 20px;
+  background-color: #f1f1f1;
+}
+
+input[type="file"]:hover {
+  border-color: #1565c0;
+  background-color: #e3f2fd;
+}
+
+h3 {
+  text-align: center;
+  color: #0d47a1;
+  font-size: 1.5rem;
+  margin-top: 20px;
+}
+
+select {
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
+
+select:focus {
+  outline: none;
+  border-color: #0d47a1;
+  box-shadow: 0 0 5px rgba(13, 71, 161, 0.5);
+}
+
+.present {
+  background-color: #d4edda;
+  color: green;
+  cursor: pointer;
+  text-align: center;
+}
+
+.absent {
+  background-color: #f8d7da;
+  color: red;
+  cursor: pointer;
+  text-align: center;
+}
+
+
+/* Additional Styles */
+#attendance-table td {
+  text-align: center; /* Ensures that the content in td tags is centered */
+  vertical-align: middle; /* Ensures that the content is vertically centered */
+}
+
+#attendance-table {
+  width: fit-content;
+}
+#excel-file {
+  padding: 10px;
+  border: 2px dashed #4caf50;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+  font-family: 'Segoe UI', sans-serif;
+  cursor: pointer;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+#excel-file:hover {
+  background-color: #e0f7e9;
+  border-color: #388e3c;
+}
+.file-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}

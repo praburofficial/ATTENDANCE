@@ -1,16 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Staff Login</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Staff Login - Department Attendance System</title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
   <div class="login-container">
     <h2>Staff Login</h2>
-    <input type="text" id="staffUsername" placeholder="Username" />
-    <input type="password" id="staffPassword" placeholder="Password" />
-    <button onclick="handleStaffLogin()">Login</button>
+    <form id="staff-login-form" onsubmit="staffLogin(event)">
+      <input type="text" id="staff-username" placeholder="Enter your username" required />
+      <input type="password" id="staff-password" placeholder="Enter your password" required />
+      <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="admin_login.html">Contact Admin</a></p>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>

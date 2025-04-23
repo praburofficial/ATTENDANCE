@@ -1,33 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Attendance</title>
+  <meta charset="UTF-8">
+  <title>Attendance with Excel Upload</title>
   <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+  /* General Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f2f7fc;
+  padding: 40px 20px;
+  margin: 0;
+}
+
+/* Container for content */
+.container {
+  max-width: 1100px;
+  margin: auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 50px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #2c3e50;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+/* File Upload & Day Selector */
+input[type="file"], select {
+  padding: 12px;
+  font-size: 16px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  width: 48%;
+  display: inline-block;
+  background-color: #f9f9f9;
+}
+
+input[type="file"]:hover, select:hover {
+  border-color: #0077cc;
+}
+
+button {
+  padding: 12px 20px;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+button:hover {
+  background-color: #005fa3;
+}
+
+/* Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+}
+
+th, td {
+  padding: 15px;
+  text-align: center;
+  font-size: 14px;
+}
+
+th {
+  background-color: #0077cc;
+  color: white;
+  font-weight: 600;
+}
+
+td {
+  background-color: #f9f9f9;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+td.present {
+  background-color: #d4edda;
+  color: green;
+}
+
+td.absent {
+  background-color: #f8d7da;
+  color: red;
+}
+
+td:hover {
+  background-color: #e3f2fd;
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+    margin-top: 30px;
+  }
+
+  input[type="file"], select {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  table th, table td {
+    font-size: 12px;
+    padding: 10px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+}
+
+  </style>
 </head>
 <body>
-  <div class="attendance-container">
-    <h2>Attendance Page</h2>
-    <h3 id="sectionName">Section: A</h3>
-    <table>
+  <div class="container">
+    <h2>Upload Student List & Mark Attendance (7 Hours)</h2>
+
+    <input type="file" accept=".xlsx, .xls" onchange="uploadStudentData(event)" />
+    <select id="daySelector">
+      <option>Monday</option>
+      <option>Tuesday</option>
+      <option>Wednesday</option>
+      <option>Thursday</option>
+      <option>Friday</option>
+      <option>Saturday</option>
+    </select>
+    <button onclick="downloadAttendance()">Download Attendance</button>
+
+    <table id="attendanceTable">
       <thead>
         <tr>
           <th>Roll No</th>
           <th>Name</th>
-          <th>Attendance</th>
+          <th>Period 1</th>
+          <th>Period 2</th>
+          <th>Period 3</th>
+          <th>Period 4</th>
+          <th>Period 5</th>
+          <th>Period 6</th>
+          <th>Period 7</th>
         </tr>
       </thead>
-      <tbody id="studentList">
-        <!-- Student list will be dynamically inserted here -->
-      </tbody>
+      <tbody></tbody>
     </table>
-    <div class="buttons">
-      <button onclick="saveAttendance()">Save Attendance</button>
-      <button onclick="downloadAttendance()">Download Attendance</button>
-    </div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    window.onload = function () {
+      const storedStudents = JSON.parse(localStorage.getItem("studentList"));
+      if (storedStudents && storedStudents.length > 0) {
+        renderAttendanceTable(storedStudents);
+      }
+    };
+  
+    function uploadStudentData(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+  
+      reader.onload = function (e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(sheet);
+  
+        if (!jsonData.length || !jsonData[0].RollNo || !jsonData[0].Name) {
+          alert("Excel must have 'RollNo' and 'Name' columns!");
+          return;
+        }
+  
+        localStorage.setItem("studentList", JSON.stringify(jsonData)); // ✅ Save to localStorage
+        renderAttendanceTable(jsonData);
+      };
+  
+      reader.readAsArrayBuffer(file);
+    }
+  
+    function renderAttendanceTable(students) {
+      const tbody = document.querySelector("#attendanceTable tbody");
+      tbody.innerHTML = "";
+  
+      students.forEach(student => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${student.RollNo}</td>
+          <td>${student.Name}</td>
+          ${[...Array(7)].map(() => `<td class="present" onclick="toggleStatus(this)">Present</td>`).join("")}
+        `;
+        tbody.appendChild(row);
+      });
+    }
+  
+    function toggleStatus(cell) {
+      if (cell.classList.contains("present")) {
+        cell.classList.remove("present");
+        cell.classList.add("absent");
+        cell.textContent = "Absent";
+      } else {
+        cell.classList.remove("absent");
+        cell.classList.add("present");
+        cell.textContent = "Present";
+      }
+    }
+  
+    function downloadAttendance() {
+      const day = document.getElementById("daySelector").value;
+      const wb = XLSX.utils.book_new();
+      const data = [["Roll No", "Name", "Period 1", "Period 2", "Period 3", "Period 4", "Period 5", "Period 6", "Period 7"]];
+  
+      const rows = document.querySelectorAll("#attendanceTable tbody tr");
+      rows.forEach(row => {
+        const cols = row.querySelectorAll("td");
+        const rowData = Array.from(cols).map((cell, index) => {
+          return index < 2 ? cell.textContent : (cell.classList.contains("present") ? "Present" : "Absent");
+        });
+        data.push(rowData);
+      });
+  
+      const ws = XLSX.utils.aoa_to_sheet(data);
+      XLSX.utils.book_append_sheet(wb, ws, `${day} Attendance`);
+      XLSX.writeFile(wb, `${day}_Attendance.xlsx`);
+    }
+  </script>
+  
 </body>
 </html>

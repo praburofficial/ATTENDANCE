@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Attendance Analytics</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="analytics-container">
+    <h1 style="text-align: center;">Attendance Analytics</h1>
+    <h2 id="analytics-date">Date: --/--/----</h2>
+
+    <div id="daily-percentage">
+      <h3>Daily Attendance Percentage</h3>
+      <p id="overall-percentage">Loading...</p>
+    </div>
+
+    <div id="hour-wise">
+      <h3>Hour-wise Attendance</h3>
+      <ul id="hour-list">
+        <!-- Dynamically filled -->
+      </ul>
+    </div>
+
+    <button onclick="window.location.href='index.html'">Back to Home</button>
+  </div>
+
+  <script src="analytics.js"></script>
+</body>
+
+</html> 
