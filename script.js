@@ -120,28 +120,46 @@ function generateAttendanceCells(rollNumber, attendanceData) {
 
 // ========== Save Attendance ==========
 function saveAttendance() {
+  const date = document.getElementById("attendance-date").value;
+  const dayOrder = document.getElementById("day-order").value;
+  const tbody = document.querySelector("#attendance-table tbody");
+
+  if (!date) {
+    alert("Please select a date first.");
+    return;
+  }
+
   const currentStaff = JSON.parse(localStorage.getItem("currentStaff"));
-  const year = currentStaff.year;
-  const section = currentStaff.section;
-  const selectedDate = document.getElementById("attendance-date").value;
+  const key = `attendance_${currentStaff.year}_${currentStaff.section}_${date}`;
 
-  const studentsKey = `students_${year}_${section}`;
-  const studentList = JSON.parse(localStorage.getItem(studentsKey)) || [];
+  const attendanceData = [];
 
-  const attendanceData = {};
-  studentList.forEach(student => {
-    const periods = {};
-    for (let i = 1; i <= 7; i++) {
-      const status = document.getElementById(`attendance-${student.RollNumber}-${i}`).value;
-      periods[`period${i}`] = status;
+  for (const row of tbody.rows) {
+    const rowData = {
+      roll: row.cells[0].textContent,
+      name: row.cells[1].textContent,
+      periods: []
+    };
+
+    for (let i = 2; i < 9; i++) {
+      const checkbox = row.cells[i].querySelector("input[type='checkbox']");
+      rowData.periods.push(checkbox.checked ? "P" : "A");
     }
-    attendanceData[student.RollNumber] = periods;
-  });
 
-  const attendanceKey = `attendance_${year}_${section}_${selectedDate}`;
-  localStorage.setItem(attendanceKey, JSON.stringify(attendanceData));
+    attendanceData.push(rowData);
+  }
+
+  const saveObject = {
+    dayOrder,
+    attendanceData
+  };
+
+  localStorage.setItem(key, JSON.stringify(saveObject));
+
   alert("Attendance saved successfully!");
+  document.getElementById("view-analytics-btn").style.display = "inline-block"; // Show button
 }
+
 
 // ========== Load Attendance for Selected Date ==========
 function loadAttendance(year, section, selectedDate = "") {
@@ -346,3 +364,34 @@ document.addEventListener("DOMContentLoaded", function () {
     hourList.appendChild(li);
   });
 });
+// Handle the form submission and add new staff to the list
+function createStaff(event) {
+  event.preventDefault(); // Prevent form from submitting traditionally
+
+  // Get input values
+  const username = document.getElementById('staff-username').value;
+  const password = document.getElementById('staff-password').value;
+  const year = document.getElementById('staff-year').value;
+  const section = document.getElementById('staff-section').value;
+
+  // Assuming you're saving this data (e.g., sending it to a backend or storing locally)
+  const staffData = { username, password, year, section };
+
+  // Update staff list table
+  const staffListTable = document.getElementById('staff-list').getElementsByTagName('tbody')[0];
+  const newRow = staffListTable.insertRow();
+  
+  const usernameCell = newRow.insertCell(0);
+  const yearCell = newRow.insertCell(1);
+  const sectionCell = newRow.insertCell(2);
+
+  usernameCell.textContent = username;
+  yearCell.textContent = year;
+  sectionCell.textContent = section;
+
+  // Clear form inputs
+  document.getElementById('create-staff-form').reset();
+  
+  // Optionally, display a success message
+  alert('Staff account created successfully!');
+}

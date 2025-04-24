@@ -59,6 +59,10 @@
     <!-- Action Buttons -->
     <button onclick="saveAttendance()">Save Attendance</button>
     <button onclick="downloadAttendanceReport()">Download Attendance Report</button>
+    
+    <!-- Link to Analytics Page -->
+    <h3>View Analytics</h3>
+    <button onclick="redirectToAnalytics()">Go to Analytics</button>
   </div>
 
   <!-- JS File -->
@@ -69,6 +73,34 @@
         document.getElementById("selected-day-order-display").textContent = this.value;
       });
     });
+
+    // Redirect to Analytics page and store attendance data in localStorage
+    function redirectToAnalytics() {
+      const attendanceData = getAttendanceData(); // Function to collect attendance data from table
+      localStorage.setItem("attendanceData", JSON.stringify(attendanceData)); // Store it in localStorage
+      window.location.href = "analytics.html"; // Redirect to analytics page
+    }
+
+    // Function to collect attendance data from the table
+    function getAttendanceData() {
+      const rows = document.querySelectorAll("#attendance-table tbody tr");
+      const attendanceData = [];
+      
+      rows.forEach(row => {
+        const student = {
+          name: row.cells[1].textContent,
+          attendance: []
+        };
+
+        for (let i = 2; i < 9; i++) {
+          student.attendance.push(row.cells[i].textContent);
+        }
+
+        attendanceData.push(student);
+      });
+
+      return attendanceData;
+    }
   </script>
   <script src="script.js"></script>
 </body>

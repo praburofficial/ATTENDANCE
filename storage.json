@@ -1,0 +1,11 @@
+[
+    {
+      "name": "Student 1",
+      "attendance": ["Present", "Present", "Absent", "Present", "Present", "Present", "Present"]
+    },
+    {
+      "name": "Student 2",
+      "attendance": ["Present", "Present", "Present", "Present", "Present", "Present", "Absent"]
+    }
+  ]
+  

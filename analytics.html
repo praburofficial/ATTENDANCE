@@ -1,31 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Attendance Analytics</title>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Analytics</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="analytics-container">
-    <h1 style="text-align: center;">Attendance Analytics</h1>
-    <h2 id="analytics-date">Date: --/--/----</h2>
-
-    <div id="daily-percentage">
-      <h3>Daily Attendance Percentage</h3>
-      <p id="overall-percentage">Loading...</p>
+    <div class="navbar">
+        <h2>Attendance Analytics</h2>
+        <a href="staff_dashboard.html" class="home-button">Back to Dashboard</a>
     </div>
 
-    <div id="hour-wise">
-      <h3>Hour-wise Attendance</h3>
-      <ul id="hour-list">
-        <!-- Dynamically filled -->
-      </ul>
+    <div class="container">
+        <h2>Attendance Analytics</h2>
+        <div class="analytics-info">
+            <h3>Daily Attendance Percentage</h3>
+            <p id="daily-attendance-percentage">Loading...</p>
+        </div>
+
+        <div class="analytics-info">
+            <h3>Hourly Attendance Breakdown</h3>
+            <table id="hourly-attendance-table">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Present</th>
+                        <th>Absent</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Hourly attendance data will be inserted here -->
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <button onclick="window.location.href='index.html'">Back to Home</button>
-  </div>
+    <script src="script.js"></script>
+    <script>
+        // Function to calculate daily and hourly attendance
+        function loadAnalyticsData() {
+            const attendanceData = JSON.parse(localStorage.getItem("attendanceData"));
+            if (!attendanceData) {
+                document.getElementById("daily-attendance-percentage").textContent = "No attendance data available.";
+                return;
+            }
 
-  <script src="analytics.js"></script>
+            // Calculate daily attendance percentage
+            let totalPresent = 0;
+            let totalStudents = attendanceData.length;
+
+            attendanceData.forEach(student => {
+                if (student.attendance.every(status => status === "Present")) {
+                    totalPresent++;
+                }
+            });
+
+            const dailyPercentage = (totalPresent / totalStudents) * 100;
+            document.getElementById("daily-attendance-percentage").textContent = `${dailyPercentage.toFixed(2)}%`;
+
+            // Calculate hourly attendance breakdown
+            const hourlyData = [
+                { period: "Period 1", present: 0, absent: 0 },
+                { period: "Period 2", present: 0, absent: 0 },
+                { period: "Period 3", present: 0, absent: 0 },
+                { period: "Period 4", present: 0, absent: 0 },
+                { period: "Period 5", present: 0, absent: 0 },
+                { period: "Period 6", present: 0, absent: 0 },
+                { period: "Period 7", present: 0, absent: 0 }
+            ];
+
+            attendanceData.forEach(student => {
+                student.attendance.forEach((status, index) => {
+                    if (status === "Present") {
+                        hourlyData[index].present++;
+                    } else {
+                        hourlyData[index].absent++;
+                    }
+                });
+            });
+
+            // Update hourly attendance table
+            const tbody = document.getElementById("hourly-attendance-table").getElementsByTagName('tbody')[0];
+            hourlyData.forEach((data, index) => {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = data.period;
+                row.insertCell(1).textContent = data.present;
+                row.insertCell(2).textContent = data.absent;
+                row.insertCell(3).textContent = ((data.present / (data.present + data.absent)) * 100).toFixed(2) + "%";
+            });
+        }
+
+        // Load analytics data when page loads
+        document.addEventListener("DOMContentLoaded", loadAnalyticsData);
+    </script>
 </body>
-
-</html> 
+</html>

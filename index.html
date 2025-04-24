@@ -9,17 +9,13 @@
 <body>
   <div class="home-container">
     
-    <img src="logo.png" alt="College Logo" class="logo" />
+    <img src="logo.png" alt="College Logo" class="logo" />   
     <h1>Department Attendance Management System</h1>
     <h3>Manage daily attendance seamlessly for every department and section</h3>
 
     <div class="login-buttons">
       <a href="admin_login.html">Admin Login</a>
       <a href="staff_login.html">Staff Login</a>
-      <!-- Add this inside your body, below Save Attendance button -->
-<button id="view-analytics-btn" onclick="window.location.href='analytics.html'">View Analytics</button>
-
-
     </div>
 
     <div class="department-list">
@@ -36,8 +32,13 @@
     </div>
 
     <footer>
-      © 2025 Department Attendance System | Designed by Department of CSE
+      <p>© 2025 Department Attendance System | Designed by Department of CSE</p>
+      <button onclick="displayMessage()">Contact Us</button>
     </footer>
   </div>
+
+  <!-- Adding JavaScript -->
+  <script src="script.js"></script>
+
 </body>
 </html>
