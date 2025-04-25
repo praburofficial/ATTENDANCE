@@ -1,99 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendance Analytics</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <title>Attendance Analytics</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2f7fc;
+      padding: 40px 20px;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-top: 50px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #2c3e50;
+      font-size: 2rem;
+      font-weight: 500;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    th {
+      background-color: #0077cc;
+      color: white;
+      font-weight: 600;
+    }
+
+    td {
+      background-color: #f9f9f9;
+      font-weight: 400;
+    }
+  </style>
 </head>
 <body>
-    <div class="navbar">
-        <h2>Attendance Analytics</h2>
-        <a href="staff_dashboard.html" class="home-button">Back to Dashboard</a>
-    </div>
+  <div class="container">
+    <h2>Attendance Analytics</h2>
+    <table id="analyticsTable">
+      <thead>
+        <tr>
+          <th>Roll No</th>
+          <th>Name</th>
+          <th>Total Present</th>
+          <th>Total Absent</th>
+          <th>Attendance %</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
-    <div class="container">
-        <h2>Attendance Analytics</h2>
-        <div class="analytics-info">
-            <h3>Daily Attendance Percentage</h3>
-            <p id="daily-attendance-percentage">Loading...</p>
-        </div>
+  <script>
+    window.onload = function () {
+      const attendanceData = JSON.parse(localStorage.getItem("markedAttendance"));
+      if (!attendanceData) {
+        alert("No attendance data found!");
+        return;
+      }
 
-        <div class="analytics-info">
-            <h3>Hourly Attendance Breakdown</h3>
-            <table id="hourly-attendance-table">
-                <thead>
-                    <tr>
-                        <th>Period</th>
-                        <th>Present</th>
-                        <th>Absent</th>
-                        <th>Percentage</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Hourly attendance data will be inserted here -->
-                </tbody>
-            </table>
-        </div>
-    </div>
+      const tbody = document.querySelector("#analyticsTable tbody");
+      tbody.innerHTML = "";
 
-    <script src="script.js"></script>
-    <script>
-        // Function to calculate daily and hourly attendance
-        function loadAnalyticsData() {
-            const attendanceData = JSON.parse(localStorage.getItem("attendanceData"));
-            if (!attendanceData) {
-                document.getElementById("daily-attendance-percentage").textContent = "No attendance data available.";
-                return;
-            }
+      attendanceData.forEach(student => {
+        const totalPeriods = student.Periods.length;
+        const totalPresent = student.Periods.filter(status => status === "Present").length;
+        const totalAbsent = totalPeriods - totalPresent;
+        const attendancePercentage = ((totalPresent / totalPeriods) * 100).toFixed(2);
 
-            // Calculate daily attendance percentage
-            let totalPresent = 0;
-            let totalStudents = attendanceData.length;
-
-            attendanceData.forEach(student => {
-                if (student.attendance.every(status => status === "Present")) {
-                    totalPresent++;
-                }
-            });
-
-            const dailyPercentage = (totalPresent / totalStudents) * 100;
-            document.getElementById("daily-attendance-percentage").textContent = `${dailyPercentage.toFixed(2)}%`;
-
-            // Calculate hourly attendance breakdown
-            const hourlyData = [
-                { period: "Period 1", present: 0, absent: 0 },
-                { period: "Period 2", present: 0, absent: 0 },
-                { period: "Period 3", present: 0, absent: 0 },
-                { period: "Period 4", present: 0, absent: 0 },
-                { period: "Period 5", present: 0, absent: 0 },
-                { period: "Period 6", present: 0, absent: 0 },
-                { period: "Period 7", present: 0, absent: 0 }
-            ];
-
-            attendanceData.forEach(student => {
-                student.attendance.forEach((status, index) => {
-                    if (status === "Present") {
-                        hourlyData[index].present++;
-                    } else {
-                        hourlyData[index].absent++;
-                    }
-                });
-            });
-
-            // Update hourly attendance table
-            const tbody = document.getElementById("hourly-attendance-table").getElementsByTagName('tbody')[0];
-            hourlyData.forEach((data, index) => {
-                const row = tbody.insertRow();
-                row.insertCell(0).textContent = data.period;
-                row.insertCell(1).textContent = data.present;
-                row.insertCell(2).textContent = data.absent;
-                row.insertCell(3).textContent = ((data.present / (data.present + data.absent)) * 100).toFixed(2) + "%";
-            });
-        }
-
-        // Load analytics data when page loads
-        document.addEventListener("DOMContentLoaded", loadAnalyticsData);
-    </script>
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${student.RollNo}</td>
+          <td>${student.Name}</td>
+          <td>${totalPresent}</td>
+          <td>${totalAbsent}</td>
+          <td>${attendancePercentage}%</td>
+        `;
+        tbody.appendChild(row);
+      });
+    };
+  </script>
 </body>
 </html>

@@ -79,6 +79,90 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// ========== Render Attendance Table ==========
+function renderAttendanceTable(students) {
+  const tbody = document.querySelector("#attendanceTable tbody");
+  tbody.innerHTML = "";
+
+  students.forEach(student => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${student.RollNo}</td>
+      <td>${student.Name}</td>
+      ${[...Array(7)].map(() => `<td class="present" onclick="toggleStatus(this)">Present</td>`).join("")}
+    `;
+    tbody.appendChild(row);
+  });
+
+  saveAttendanceToLocal(); // Save the default "Present" status to localStorage
+}
+
+// ========== Toggle Attendance Status ==========
+function toggleStatus(cell) {
+  if (cell.classList.contains("present")) {
+    cell.classList.remove("present");
+    cell.classList.add("absent");
+    cell.textContent = "Absent";
+  } else {
+    cell.classList.remove("absent");
+    cell.classList.add("present");
+    cell.textContent = "Present";
+  }
+
+  saveAttendanceToLocal(); // Save data after toggling
+}
+
+// ========== Save Attendance to LocalStorage ==========
+function saveAttendanceToLocal() {
+  const rows = document.querySelectorAll("#attendanceTable tbody tr");
+  const attendance = [];
+
+  rows.forEach(row => {
+    const cols = row.querySelectorAll("td");
+    const student = {
+      RollNo: cols[0].textContent,
+      Name: cols[1].textContent,
+      Periods: []
+    };
+
+    for (let i = 2; i < cols.length; i++) {
+      student.Periods.push(cols[i].classList.contains("present") ? "Present" : "Absent");
+    }
+
+    attendance.push(student);
+  });
+
+  localStorage.setItem("markedAttendance", JSON.stringify(attendance));
+}
+
+// ========== Upload Student List ==========
+function uploadStudentData(event) {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function (e) {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, { type: 'array' });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+    if (!jsonData.length || !jsonData[0].RollNo || !jsonData[0].Name) {
+      alert("Excel must have 'RollNo' and 'Name' columns!");
+      return;
+    }
+
+    localStorage.setItem("studentList", JSON.stringify(jsonData)); // Save to localStorage
+    renderAttendanceTable(jsonData);
+  };
+
+  reader.readAsArrayBuffer(file);
+}
+
+// ========== Download Attendance ==========
+function downloadAttendance() {
+  alert("Download functionality is not implemented yet.");
+}
+
 // ========== Load Attendance ==========
 function loadAttendance(year, section, selectedDate = "") {
   const studentsKey = `students_${year}_${section}`;
@@ -98,14 +182,42 @@ function loadAttendance(year, section, selectedDate = "") {
       ${generateAttendanceCells(student.RollNumber, attendanceData)}
     `;
   });
+
+  // Save attendance data to localStorage whenever the table is loaded
+  const saveButton = document.getElementById("save-attendance");
+  if (saveButton) {
+    saveButton.onclick = () => {
+      const rows = table.getElementsByTagName("tr");
+      const updatedAttendance = {};
+
+      Array.from(rows).forEach(row => {
+        const rollNumber = row.cells[0].textContent;
+        updatedAttendance[rollNumber] = {};
+
+        for (let i = 2; i < row.cells.length; i++) {
+          const select = row.cells[i].querySelector("select");
+          if (select) {
+            updatedAttendance[rollNumber][`period${i - 1}`] = select.value;
+          }
+        }
+      });
+
+      if (selectedDate) {
+        localStorage.setItem(attendanceKey, JSON.stringify(updatedAttendance));
+        alert("Attendance saved successfully!");
+      } else {
+        alert("Please select a date to save attendance.");
+      }
+    };
+  }
 }
 
-// ========== Generate Period Cells ==========
+// ========== Generate Attendance Cells ==========
 function generateAttendanceCells(rollNumber, attendanceData) {
   let cells = "";
   for (let i = 1; i <= 7; i++) {
     const key = `period${i}`;
-    const status = attendanceData[rollNumber]?.[key] || "Absent";
+    const status = attendanceData[rollNumber]?.[key] || "Present"; // Default to Present
     cells += `
       <td>
         <select id="attendance-${rollNumber}-${i}">
@@ -116,282 +228,4 @@ function generateAttendanceCells(rollNumber, attendanceData) {
     `;
   }
   return cells;
-}
-
-// ========== Save Attendance ==========
-function saveAttendance() {
-  const date = document.getElementById("attendance-date").value;
-  const dayOrder = document.getElementById("day-order").value;
-  const tbody = document.querySelector("#attendance-table tbody");
-
-  if (!date) {
-    alert("Please select a date first.");
-    return;
-  }
-
-  const currentStaff = JSON.parse(localStorage.getItem("currentStaff"));
-  const key = `attendance_${currentStaff.year}_${currentStaff.section}_${date}`;
-
-  const attendanceData = [];
-
-  for (const row of tbody.rows) {
-    const rowData = {
-      roll: row.cells[0].textContent,
-      name: row.cells[1].textContent,
-      periods: []
-    };
-
-    for (let i = 2; i < 9; i++) {
-      const checkbox = row.cells[i].querySelector("input[type='checkbox']");
-      rowData.periods.push(checkbox.checked ? "P" : "A");
-    }
-
-    attendanceData.push(rowData);
-  }
-
-  const saveObject = {
-    dayOrder,
-    attendanceData
-  };
-
-  localStorage.setItem(key, JSON.stringify(saveObject));
-
-  alert("Attendance saved successfully!");
-  document.getElementById("view-analytics-btn").style.display = "inline-block"; // Show button
-}
-
-
-// ========== Load Attendance for Selected Date ==========
-function loadAttendance(year, section, selectedDate = "") {
-  const studentsKey = `students_${year}_${section}`;
-  const studentList = JSON.parse(localStorage.getItem(studentsKey)) || [];
-
-  const attendanceKey = `attendance_${year}_${section}_${selectedDate}`;
-  const attendanceData = JSON.parse(localStorage.getItem(attendanceKey)) || {};
-
-  const table = document.getElementById("attendance-table").getElementsByTagName("tbody")[0];
-  table.innerHTML = "";
-
-  studentList.forEach((student) => {
-    const row = table.insertRow();
-    row.innerHTML = `
-      <td>${student.RollNumber}</td>
-      <td>${student.Name}</td>
-      ${generateAttendanceCells(student.RollNumber, attendanceData)}
-    `;
-  });
-}
-
-// ========== Upload Student List from Excel ==========
-function handleStudentUpload() {
-  const fileInput = document.getElementById("excel-file");
-  const file = fileInput.files[0];
-
-  if (!file) {
-    alert("Please select an Excel file.");
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const data = new Uint8Array(e.target.result);
-    const workbook = XLSX.read(data, { type: "array" });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const studentList = XLSX.utils.sheet_to_json(sheet);
-
-    const currentStaff = JSON.parse(localStorage.getItem("currentStaff"));
-    if (!currentStaff) {
-      alert("Staff not logged in.");
-      return;
-    }
-
-    const key = `students_${currentStaff.year}_${currentStaff.section}`;
-    localStorage.setItem(key, JSON.stringify(studentList));
-    alert("Student list uploaded successfully!");
-
-    const selectedDate = document.getElementById("attendance-date")?.value;
-    if (selectedDate) {
-      loadAttendance(currentStaff.year, currentStaff.section, selectedDate);
-    }
-  };
-
-  reader.readAsArrayBuffer(file);
-}
-
-// ========== Download Attendance Report ==========
-function downloadAttendanceReport() {
-  const currentStaff = JSON.parse(localStorage.getItem("currentStaff"));
-  const year = currentStaff.year;
-  const section = currentStaff.section;
-  const selectedDate = document.getElementById("attendance-date").value;
-
-  const studentsKey = `students_${year}_${section}`;
-  const studentList = JSON.parse(localStorage.getItem(studentsKey)) || [];
-
-  const attendanceKey = `attendance_${year}_${section}_${selectedDate}`;
-  const attendanceData = JSON.parse(localStorage.getItem(attendanceKey)) || {};
-
-  const reportData = studentList.map(student => {
-    const row = { RollNumber: student.RollNumber, Name: student.Name };
-    for (let i = 1; i <= 7; i++) {
-      row[`Period ${i}`] = attendanceData[student.RollNumber]?.[`period${i}`] || "Absent";
-    }
-    return row;
-  });
-
-  const ws = XLSX.utils.json_to_sheet(reportData);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Attendance");
-  XLSX.writeFile(wb, `Attendance_Report_${year}_${section}_${selectedDate}.xlsx`);
-}
-
-// ========== Manual Toggle Mode (Optional UI Alternate) ==========
-function renderAttendanceTable(students) {
-  const tbody = document.querySelector("#attendance-table tbody");
-  tbody.innerHTML = "";
-
-  students.forEach(student => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${student.RollNo}</td>
-      <td>${student.Name}</td>
-      ${[...Array(7)].map(() => `<td class="present" onclick="toggleStatus(this)">Present</td>`).join("")}
-    `;
-    tbody.appendChild(row);
-  });
-}
-
-function toggleStatus(cell) {
-  if (cell.classList.contains("present")) {
-    cell.classList.remove("present");
-    cell.classList.add("absent");
-    cell.textContent = "Absent";
-  } else {
-    cell.classList.remove("absent");
-    cell.classList.add("present");
-    cell.textContent = "Present";
-  }
-}
-function generateAttendanceCells(rollNumber, attendanceData) {
-  let attendanceCells = "";
-  for (let i = 1; i <= 7; i++) {
-    const periodKey = `period${i}`;
-    const status = attendanceData[rollNumber]?.[periodKey] || "Present"; // Default to Present
-    attendanceCells += `
-      <td>
-        <select id="attendance-${rollNumber}-${i}">
-          <option value="Present" ${status === "Present" ? "selected" : ""}>Present</option>
-          <option value="Absent" ${status === "Absent" ? "selected" : ""}>Absent</option>
-        </select>
-      </td>
-    `;
-  }
-  return attendanceCells;
-}
-function saveAttendance() {
-  const year = localStorage.getItem("staffYear");
-  const section = localStorage.getItem("staffSection");
-  const selectedDate = document.getElementById("attendance-date").value;
-  const dayOrder = document.getElementById("day-order").value;
-
-  const attendanceKey = `attendance_${year}_${section}_${selectedDate}`;
-  const attendanceData = {};
-
-  const rows = document.querySelectorAll("#attendance-table tbody tr");
-  rows.forEach((row) => {
-    const rollNumber = row.cells[0].textContent;
-    attendanceData[rollNumber] = {};
-
-    for (let i = 1; i <= 7; i++) {
-      const select = document.getElementById(`attendance-${rollNumber}-${i}`);
-      attendanceData[rollNumber][`period${i}`] = select.value;
-    }
-  });
-
-  // Include day order
-  const fullData = {
-    dayOrder: dayOrder,
-    attendance: attendanceData
-  };
-
-  localStorage.setItem(attendanceKey, JSON.stringify(fullData));
-  alert("Attendance saved successfully!");
-}
-function saveAttendance() {
-  // Your existing logic to save attendance...
-  
-  alert("Attendance saved successfully!");
-
-  // Show the analytics button
-  document.getElementById("view-analytics-btn").style.display = "inline-block";
-}
-document.addEventListener("DOMContentLoaded", function () {
-  const attendanceData = JSON.parse(localStorage.getItem("attendanceData")) || {};
-  const today = new Date().toISOString().split("T")[0];
-
-  const todayData = attendanceData[today] || [];
-  const totalStudents = todayData.length;
-  let presentCount = 0;
-  const hourWise = [0, 0, 0, 0, 0, 0, 0];
-
-  todayData.forEach(student => {
-    for (let i = 0; i < 7; i++) {
-      if (student.attendance[i] === "P") {
-        hourWise[i]++;
-      }
-    }
-  });
-
-  const overallPercentage = totalStudents
-    ? Math.round((hourWise.reduce((a, b) => a + b, 0) / (totalStudents * 7)) * 100)
-    : 0;
-
-  document.getElementById("analytics-date").textContent = `Date: ${today}`;
-  document.getElementById("overall-percentage").textContent = `Overall: ${overallPercentage}%`;
-
-  const hourLabels = [
-    "Period 1", "Period 2", "Period 3", "Period 4",
-    "Period 5", "Period 6", "Period 7"
-  ];
-
-  const hourList = document.getElementById("hour-list");
-  hourList.innerHTML = "";
-
-  hourWise.forEach((count, index) => {
-    const percentage = totalStudents ? Math.round((count / totalStudents) * 100) : 0;
-    const li = document.createElement("li");
-    li.textContent = `${hourLabels[index]}: ${percentage}% present`;
-    hourList.appendChild(li);
-  });
-});
-// Handle the form submission and add new staff to the list
-function createStaff(event) {
-  event.preventDefault(); // Prevent form from submitting traditionally
-
-  // Get input values
-  const username = document.getElementById('staff-username').value;
-  const password = document.getElementById('staff-password').value;
-  const year = document.getElementById('staff-year').value;
-  const section = document.getElementById('staff-section').value;
-
-  // Assuming you're saving this data (e.g., sending it to a backend or storing locally)
-  const staffData = { username, password, year, section };
-
-  // Update staff list table
-  const staffListTable = document.getElementById('staff-list').getElementsByTagName('tbody')[0];
-  const newRow = staffListTable.insertRow();
-  
-  const usernameCell = newRow.insertCell(0);
-  const yearCell = newRow.insertCell(1);
-  const sectionCell = newRow.insertCell(2);
-
-  usernameCell.textContent = username;
-  yearCell.textContent = year;
-  sectionCell.textContent = section;
-
-  // Clear form inputs
-  document.getElementById('create-staff-form').reset();
-  
-  // Optionally, display a success message
-  alert('Staff account created successfully!');
 }

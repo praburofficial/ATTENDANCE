@@ -6,136 +6,131 @@
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
-  /* General Styles */
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f2f7fc;
-  padding: 40px 20px;
-  margin: 0;
-}
+    /* General Styles */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2f7fc;
+      padding: 40px 20px;
+      margin: 0;
+    }
 
-/* Container for content */
-.container {
-  max-width: 1100px;
-  margin: auto;
-  background: #fff;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin-top: 50px;
-}
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-top: 50px;
+    }
 
-h2 {
-  text-align: center;
-  margin-bottom: 30px;
-  color: #2c3e50;
-  font-size: 2rem;
-  font-weight: 500;
-}
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #2c3e50;
+      font-size: 2rem;
+      font-weight: 500;
+    }
 
-/* File Upload & Day Selector */
-input[type="file"], select {
-  padding: 12px;
-  font-size: 16px;
-  margin-bottom: 20px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  width: 48%;
-  display: inline-block;
-  background-color: #f9f9f9;
-}
+    input[type="file"], select {
+      padding: 12px;
+      font-size: 16px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      width: 48%;
+      display: inline-block;
+      background-color: #f9f9f9;
+    }
 
-input[type="file"]:hover, select:hover {
-  border-color: #0077cc;
-}
+    input[type="file"]:hover, select:hover {
+      border-color: #0077cc;
+    }
 
-button {
-  padding: 12px 20px;
-  background-color: #0077cc;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.3s;
-  width: 100%;
-  margin-bottom: 30px;
-}
+    button {
+      padding: 12px 20px;
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+      margin-bottom: 30px;
+    }
 
-button:hover {
-  background-color: #005fa3;
-}
+    button:hover {
+      background-color: #005fa3;
+    }
 
-/* Table Styles */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 30px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
 
-table, th, td {
-  border: 1px solid #ddd;
-}
+    table, th, td {
+      border: 1px solid #ddd;
+    }
 
-th, td {
-  padding: 15px;
-  text-align: center;
-  font-size: 14px;
-}
+    th, td {
+      padding: 15px;
+      text-align: center;
+      font-size: 14px;
+    }
 
-th {
-  background-color: #0077cc;
-  color: white;
-  font-weight: 600;
-}
+    th {
+      background-color: #0077cc;
+      color: white;
+      font-weight: 600;
+    }
 
-td {
-  background-color: #f9f9f9;
-  font-weight: 400;
-  cursor: pointer;
-}
+    td {
+      background-color: #f9f9f9;
+      font-weight: 400;
+      cursor: pointer;
+    }
 
-td.present {
-  background-color: #d4edda;
-  color: green;
-}
+    td.present {
+      background-color: #d4edda;
+      color: green;
+    }
 
-td.absent {
-  background-color: #f8d7da;
-  color: red;
-}
+    td.absent {
+      background-color: #f8d7da;
+      color: red;
+    }
 
-td:hover {
-  background-color: #e3f2fd;
-}
+    td:hover {
+      background-color: #e3f2fd;
+    }
 
-/* Responsive Layout */
-@media (max-width: 768px) {
-  .container {
-    padding: 20px;
-    margin-top: 30px;
-  }
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+        margin-top: 30px;
+      }
 
-  input[type="file"], select {
-    width: 100%;
-    margin-right: 0;
-  }
+      input[type="file"], select {
+        width: 100%;
+        margin-right: 0;
+      }
 
-  button {
-    width: 100%;
-  }
+      button {
+        width: 100%;
+      }
 
-  table th, table td {
-    font-size: 12px;
-    padding: 10px;
-  }
+      table th, table td {
+        font-size: 12px;
+        padding: 10px;
+      }
 
-  h2 {
-    font-size: 1.5rem;
-  }
-}
-
+      h2 {
+        font-size: 1.5rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -152,6 +147,7 @@ td:hover {
       <option>Saturday</option>
     </select>
     <button onclick="downloadAttendance()">Download Attendance</button>
+    <button onclick="window.location.href='analytics.html'">View Analytics</button>
 
     <table id="attendanceTable">
       <thead>
@@ -178,33 +174,33 @@ td:hover {
         renderAttendanceTable(storedStudents);
       }
     };
-  
+
     function uploadStudentData(event) {
       const file = event.target.files[0];
       const reader = new FileReader();
-  
+
       reader.onload = function (e) {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(sheet);
-  
+
         if (!jsonData.length || !jsonData[0].RollNo || !jsonData[0].Name) {
           alert("Excel must have 'RollNo' and 'Name' columns!");
           return;
         }
-  
-        localStorage.setItem("studentList", JSON.stringify(jsonData)); // ✅ Save to localStorage
+
+        localStorage.setItem("studentList", JSON.stringify(jsonData)); // Save to localStorage
         renderAttendanceTable(jsonData);
       };
-  
+
       reader.readAsArrayBuffer(file);
     }
-  
+
     function renderAttendanceTable(students) {
       const tbody = document.querySelector("#attendanceTable tbody");
       tbody.innerHTML = "";
-  
+
       students.forEach(student => {
         const row = document.createElement("tr");
         row.innerHTML = `
@@ -214,8 +210,10 @@ td:hover {
         `;
         tbody.appendChild(row);
       });
+
+      saveAttendanceToLocal(); // Save the default "Present" status to localStorage
     }
-  
+
     function toggleStatus(cell) {
       if (cell.classList.contains("present")) {
         cell.classList.remove("present");
@@ -226,27 +224,35 @@ td:hover {
         cell.classList.add("present");
         cell.textContent = "Present";
       }
+
+      saveAttendanceToLocal(); // Save data after toggling
     }
-  
-    function downloadAttendance() {
-      const day = document.getElementById("daySelector").value;
-      const wb = XLSX.utils.book_new();
-      const data = [["Roll No", "Name", "Period 1", "Period 2", "Period 3", "Period 4", "Period 5", "Period 6", "Period 7"]];
-  
+
+    function saveAttendanceToLocal() {
       const rows = document.querySelectorAll("#attendanceTable tbody tr");
+      const attendance = [];
+
       rows.forEach(row => {
         const cols = row.querySelectorAll("td");
-        const rowData = Array.from(cols).map((cell, index) => {
-          return index < 2 ? cell.textContent : (cell.classList.contains("present") ? "Present" : "Absent");
-        });
-        data.push(rowData);
+        const student = {
+          RollNo: cols[0].textContent,
+          Name: cols[1].textContent,
+          Periods: []
+        };
+
+        for (let i = 2; i < cols.length; i++) {
+          student.Periods.push(cols[i].classList.contains("present") ? "Present" : "Absent");
+        }
+
+        attendance.push(student);
       });
-  
-      const ws = XLSX.utils.aoa_to_sheet(data);
-      XLSX.utils.book_append_sheet(wb, ws, `${day} Attendance`);
-      XLSX.writeFile(wb, `${day}_Attendance.xlsx`);
+
+      localStorage.setItem("markedAttendance", JSON.stringify(attendance));
+    }
+
+    function downloadAttendance() {
+      alert("Download functionality is not implemented yet.");
     }
   </script>
-  
 </body>
 </html>
